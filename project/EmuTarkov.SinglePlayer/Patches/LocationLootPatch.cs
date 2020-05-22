@@ -2,9 +2,9 @@
 using EmuTarkov.Common.Utils.Patching;
 using System.Threading.Tasks;
 using System.Threading;
-using HttpRequest = GClass1121;
-using Location = GClass732.GClass734;
-using LocationMatch = GClass732.GClass733;
+using HttpRequest = GClass1125;
+using Location = GClass736.GClass738;
+using LocationMatch = GClass736.GClass737;
 
 namespace EmuTarkov.SinglePlayer.Patches
 {
@@ -28,7 +28,7 @@ namespace EmuTarkov.SinglePlayer.Patches
 		{
 			var localGameBaseType = PatcherConstants.LocalGameType.BaseType;
 
-			locationProperty = localGameBaseType.GetProperty("GClass734_0", BindingFlags.NonPublic | BindingFlags.Instance);
+			locationProperty = localGameBaseType.GetProperty($"{nameof(GClass736.GClass738)}_0", BindingFlags.NonPublic | BindingFlags.Instance);
 			resultMethod = localGameBaseType.GetMethod("smethod_3", BindingFlags.NonPublic | BindingFlags.Static);
 			return localGameBaseType.GetMethod(methodName, flags);
 		}

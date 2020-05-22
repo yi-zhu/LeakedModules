@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EmuTarkov.SinglePlayer</RootNamespace>
-    <AssemblyName>EmuTarkov.SinglePlayer</AssemblyName>
+    <AssemblyName>NLog.EmuTarkov.SinglePlayer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

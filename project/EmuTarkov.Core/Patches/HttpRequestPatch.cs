@@ -11,8 +11,8 @@ namespace EmuTarkov.Core.Patches
 {
 	public class HttpRequestPatch : AbstractPatch
 	{
-		public const string HTTPRequest = "Class135";
-		public const string HTTPHandler = "Class136";
+		public const string HTTPRequest = "Class166";
+		public const string HTTPHandler = "Class167";
 
 		public HttpRequestPatch()
 		{

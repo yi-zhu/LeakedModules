@@ -6,7 +6,7 @@ using EmuTarkov.Common.Utils.Patching;
 using EmuTarkov.SinglePlayer.Utils.Player;
 using ISession = GInterface22;
 using ClientConfig = GClass266;
-using MatchInfo = GClass1230;
+using MatchInfo = GClass1240;
 
 namespace EmuTarkov.SinglePlayer.Patches
 {
@@ -28,16 +28,16 @@ namespace EmuTarkov.SinglePlayer.Patches
 			return PatcherConstants.MainApplicationType.GetMethod(methodName, flags);
 		}
 
-		public static void Prefix(ISession backEnd, ESideType esideType_0, Result<ExitStatus, TimeSpan, MatchInfo> result)
+		public static void Prefix(ISession ____backEnd, ESideType ___esideType_0, Result<ExitStatus, TimeSpan, MatchInfo> result)
 		{
 			bool isPlayerScav = false;
 			string backendUrl = ClientConfig.Config.BackendUrl;
-			var session = backEnd.Session;
-			Profile profile = backEnd.Session.Profile;
+			var session = ____backEnd.Session;
+			Profile profile = ____backEnd.Session.Profile;
 
-			if (esideType_0 == ESideType.Savage)
+			if (___esideType_0 == ESideType.Savage)
 			{
-				profile = backEnd.Session.ProfileOfPet;
+				profile = ____backEnd.Session.ProfileOfPet;
 				isPlayerScav = true;
 			}
 
