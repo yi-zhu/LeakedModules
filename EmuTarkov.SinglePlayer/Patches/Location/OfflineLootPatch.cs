@@ -24,7 +24,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 		{
 			var localGameBaseType = PatcherConstants.LocalGameType.BaseType;
 
-			__property = localGameBaseType.GetProperty("GClass734_0", BindingFlags.NonPublic | BindingFlags.Instance);
+			__property = localGameBaseType.GetProperty($"{nameof(GClass736.GClass738)}_0", BindingFlags.NonPublic | BindingFlags.Instance);
 			__method = localGameBaseType.GetMethod("smethod_3", BindingFlags.NonPublic | BindingFlags.Static);
 			return localGameBaseType.GetMethod(methodName, flags);
 		}
