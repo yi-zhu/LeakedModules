@@ -8,7 +8,7 @@ namespace EmuTarkov.SinglePlayer
 		private void Start()
 		{
 			new LocationLootPatch().Apply();
-			//new SaveLootPatch().Apply();
+			new SaveLootPatch().Apply();
 
 			Debug.LogError("EmuTarkov.SinglePlayer: Loaded");
 		}
