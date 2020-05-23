@@ -11,8 +11,8 @@ namespace EmuTarkov.Core.Patches
 {
 	public class HttpRequestPatch : AbstractPatch
 	{
-		public const string HTTPRequest = "Class166";
-		public const string HTTPHandler = "Class167";
+		const string HTTPRequest = "Class135";
+		const string HTTPHandler = "Class136";
 
 		public HttpRequestPatch()
 		{
@@ -23,17 +23,26 @@ namespace EmuTarkov.Core.Patches
 		public override MethodInfo TargetMethod()
 		{
 			return PatcherConstants.TargetAssembly
-				.GetTypes().Single(x => x.Name == HTTPRequest).GetNestedTypes(BindingFlags.NonPublic)
+				.GetTypes()
+				.Single(x => x.Name == HTTPRequest).GetNestedTypes(BindingFlags.NonPublic)
 				.Single(x => x.Name == HTTPHandler).GetMethod(methodName, flags);
 		}
 
 		public static bool Prefix(string url, Callback<Texture2D> callback)
 		{
 			Result<Texture2D> result = default;
-			Uri uri = new Uri(url);
+			Uri uri = new Uri(url, UriKind.RelativeOrAbsolute);
 
-			result.Value = new Request(null, uri.Host).GetImage(uri.LocalPath);
-			result.Value.name = uri.Segments[uri.Segments.Length - 1];
+			if (uri.IsAbsoluteUri)
+			{
+				result.Value = new Request(null, string.Empty).GetImage(url);
+				result.Value.name = uri.Segments[uri.Segments.Length - 1];
+			}
+			else
+			{
+				return true;
+			}
+
 			callback.Invoke(result);
 
 			return false;
