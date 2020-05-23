@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using BattlEye;
 using EmuTarkov.Common.Utils.Patching;
 
 namespace EmuTarkov.Core.Patches
@@ -24,7 +23,7 @@ namespace EmuTarkov.Core.Patches
             return __type.GetMethod(methodName, flags);
         }
 
-		public static bool Prefix(ref Task __result, object __instance, BEClient.LogDelegate logDelegate)
+		public static bool Prefix(ref Task __result, object __instance)
 		{
             __property.SetValue(__instance, true);
 			__result = Task.CompletedTask;

@@ -8,7 +8,7 @@ using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using ISession = GInterface23;
 using WaveInfo = GClass872;
-using BotsPresets = GClass293;
+using BotsPresets = GClass292;
 using BotData = GInterface13;
 using PoolManager = GClass1088;
 using JobPriority = GClass592;

@@ -4,7 +4,7 @@ using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using EmuTarkov.SinglePlayer.Utils.Bots;
 using WaveInfo = GClass872;
-using BotsPresets = GClass293;
+using BotsPresets = GClass292;
 
 namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
