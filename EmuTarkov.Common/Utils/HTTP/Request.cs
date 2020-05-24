@@ -9,7 +9,7 @@ namespace EmuTarkov.Common.Utils.HTTP
 {
 	public class Request
 	{
-		public static string Session;
+		public string Session;
 		public string RemoteEndPoint;
 
 		public Request(string session, string remoteEndPoint)
@@ -18,8 +18,8 @@ namespace EmuTarkov.Common.Utils.HTTP
 			RemoteEndPoint = remoteEndPoint;
 		}
 
-		private Stream Send(string url, string data = null, bool compress = true)
-		{
+		private Stream Send(string url, string method = "GET", string data = null, bool compress = true)
+        {
 			// disable SSL encryption
 			ServicePointManager.Expect100Continue = true;
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -34,12 +34,13 @@ namespace EmuTarkov.Common.Utils.HTTP
 				request.Headers.Add("SessionId", Session);
 			}
 
-			// set request type and body
-			if (!string.IsNullOrEmpty(data))
+			request.Method = method;
+
+			if (method != "GET" && !string.IsNullOrEmpty(data))
 			{
+				// set request body
 				byte[] bytes = (compress) ? SimpleZlib.CompressToBytes(data, zlibConst.Z_BEST_COMPRESSION) : Encoding.UTF8.GetBytes(data);
 
-				request.Method = "POST";
 				request.ContentType = "application/json";
 				request.ContentLength = bytes.Length;
 
@@ -48,19 +49,22 @@ namespace EmuTarkov.Common.Utils.HTTP
 					stream.Write(bytes, 0, bytes.Length);
 				}
 			}
-			else
-			{
-				request.Method = "GET";
-			}
 
 			// get response stream
 			WebResponse response = request.GetResponse();
 			return response.GetResponseStream();
 		}
 
-		public string GetJson(string url, string data = null, bool compress = true)
+		public void PutJson(string url, string data, bool compress = true)
 		{
-			using (Stream stream = Send(url, data, compress))
+			using (var stream = Send(url, "PUT", data, compress))
+			{
+			}
+		}
+
+		public string GetJson(string url, bool compress = true)
+		{
+			using (Stream stream = Send(url, "GET", null, compress))
 			{
 				using (MemoryStream ms = new MemoryStream())
 				{
@@ -70,9 +74,9 @@ namespace EmuTarkov.Common.Utils.HTTP
 			}
 		}
 
-		public Texture2D GetImage(string url, string data = null, bool compress = true)
+		public Texture2D GetImage(string url, bool compress = true)
 		{
-			using (Stream stream = Send(url, data, compress))
+			using (Stream stream = Send(url, "GET", null, compress))
 			{
 				using (MemoryStream ms = new MemoryStream())
 				{

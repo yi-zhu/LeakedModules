@@ -14,7 +14,7 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
 				isPlayerScav = isPlayerScav
 			};
 
-			new Request(session, backendUrl).GetJson("/raid/profile/save", request.ToJson());
+			new Request(session, backendUrl).PutJson("/raid/profile/save", request.ToJson());
 		}
 
 		internal class SaveProfileRequest
