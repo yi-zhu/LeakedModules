@@ -82,6 +82,7 @@
     <Compile Include="Patches\Bots\GetNewBotTemplatesPatch.cs" />
     <Compile Include="Patches\Bots\RemoveUsedBotProfilePatch.cs" />
     <Compile Include="Patches\Bots\SpawnPmcPatch.cs" />
+    <Compile Include="Patches\Dogtag\DogtagPatch.cs" />
     <Compile Include="Patches\Location\OfflineLootPatch.cs" />
     <Compile Include="Patches\Matchmaker\MatchmakerOfflineRaidPatch.cs" />
     <Compile Include="Patches\OfflineSavePatch.cs" />
