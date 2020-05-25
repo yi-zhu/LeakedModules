@@ -10,15 +10,10 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
     public class BotTemplateLimitPatch : AbstractPatch
     {
-        public BotTemplateLimitPatch()
-        {
-            methodName = "method_1";
-            flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
-        }
-
         public override MethodInfo TargetMethod()
         {
-            return typeof(BotsPresets).GetMethod(methodName, flags);
+            return typeof(BotsPresets)
+                .GetMethod("method_1", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static void Postfix(List<WaveInfo> __result, List<WaveInfo> wavesProfiles, List<WaveInfo> delayed)

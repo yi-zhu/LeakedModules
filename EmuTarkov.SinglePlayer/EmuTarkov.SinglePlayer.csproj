@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\Shared\References\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Shared\References\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -78,6 +82,7 @@
     <Compile Include="Patches\Bots\GetNewBotTemplatesPatch.cs" />
     <Compile Include="Patches\Bots\RemoveUsedBotProfilePatch.cs" />
     <Compile Include="Patches\Bots\SpawnPmcPatch.cs" />
+    <Compile Include="Patches\Dogtag\DogtagPatch.cs" />
     <Compile Include="Patches\Location\OfflineLootPatch.cs" />
     <Compile Include="Patches\Matchmaker\MatchmakerOfflineRaidPatch.cs" />
     <Compile Include="Patches\OfflineSavePatch.cs" />

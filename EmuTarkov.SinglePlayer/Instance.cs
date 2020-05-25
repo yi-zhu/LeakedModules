@@ -11,6 +11,7 @@ using EmuTarkov.SinglePlayer.Utils.Reflection;
 using EmuTarkov.SinglePlayer.Patches.Quests;
 using EmuTarkov.SinglePlayer.Patches.Matchmaker;
 using EmuTarkov.SinglePlayer.Patches.Weapons;
+using EmuTarkov.SinglePlayer.Patches.Dogtag;
 
 namespace EmuTarkov.SinglePlayer
 {
@@ -33,6 +34,8 @@ namespace EmuTarkov.SinglePlayer
             PatcherUtil.PatchPrefix<BeaconPatch>();
             PatcherUtil.PatchPostfix<MatchmakerOfflineRaidPatch>();
             PatcherUtil.PatchPostfix<WeaponDurabilityPatch>();
+
+            PatcherUtil.PatchPostfix<DogtagPatch>();
         }
 
         private void FixedUpdate()

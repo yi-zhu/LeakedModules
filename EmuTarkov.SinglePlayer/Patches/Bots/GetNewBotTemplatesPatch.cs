@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using Comfort.Common;
+using HarmonyLib;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using ISession = GInterface23;
@@ -18,19 +20,22 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
     public class GetNewBotTemplatesPatch : AbstractPatch
     {
         public static FieldInfo __field;
+        private static readonly Func<BotsPresets, BotData, Profile> _getNewProfileFunc;
+        private static readonly AccessTools.FieldRef<object, ISession> _sessionField;
 
-        public GetNewBotTemplatesPatch()
+        static GetNewBotTemplatesPatch()
         {
-            methodName = "method_2";
-            flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            _getNewProfileFunc = typeof(BotsPresets)
+                .GetMethod("GetNewProfile", BindingFlags.NonPublic | BindingFlags.Instance)
+                .CreateDelegate(typeof(Func<BotsPresets, BotData, Profile>)) as Func<BotsPresets, BotData, Profile>;
+
+            _sessionField = AccessTools.FieldRefAccess<ISession>(typeof(BotsPresets), $"{nameof(GInterface23).ToLower()}_0");
         }
 
         public override MethodInfo TargetMethod()
         {
-            var __type = typeof(BotsPresets);
-
-            __field = __type.GetField("ginterface23_0", flags);
-            return __type.GetMethod(methodName, flags);
+            return typeof(BotsPresets)
+                .GetMethod("method_2", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static bool Prefix(ref Task<Profile> __result, BotsPresets __instance, BotData data)
@@ -46,45 +51,78 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
                 then perform request to server and get only first value of resulting single element collection
             */
 
-            ISession session = (ISession)__field.GetValue(__instance);
+            var session = _sessionField(__instance);
+            if (session == null)
+                throw new InvalidOperationException("Something went wrong. Where is session?");
+
             Task<Profile> taskAwaiter = null;
             TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-            if (session != null)
+            // try get profile from cache
+            var profile = _getNewProfileFunc(__instance, data);
+
+            if (profile == null)
             {
-                // try get profile from cache
-                Profile profile = __instance.GetType()
-                    .GetMethod("GetNewProfile", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .Invoke(__instance, new[] { data }) as Profile;
+                // load from server
+                Debug.LogError("EmuTarkov.SinglePlayer: Loading bot profile from server");
 
-                if (profile == null)
-                {
-                    // load from server
-                    Debug.LogError("EmuTarkov.SinglePlayer: Loading bot profile from server");
+                List<WaveInfo> source = data.PrepareToLoadBackend(1).ToList();
+                taskAwaiter = session.LoadBots(source)
+                    .ContinueWith(GetFirstResult, taskScheduler);
+            }
+            else
+            {
+                // return cached profile
+                Debug.LogError("EmuTarkov.SinglePlayer: Loading bot profile from cache");
 
-                    List<WaveInfo> source = data.PrepareToLoadBackend(1).ToList();
-                    taskAwaiter = session.LoadBots(source).ContinueWith(t => t.Result[0], taskScheduler);
-                }
-                else
-                {
-                    // return cached profile
-                    Debug.LogError("EmuTarkov.SinglePlayer: Loading bot profile from cache");
-                    taskAwaiter = Task.FromResult(profile);
-                }
+                taskAwaiter = Task.FromResult(profile);
             }
 
             // load bundles for bot profile
-            __result = taskAwaiter.ContinueWith(t =>
-            {
-                Profile profile = t.Result;
-                Task loadTask = Singleton<PoolManager>.Instance
-                    .LoadBundlesAndCreatePools(PoolManager.PoolsCategory.Raid, PoolManager.AssemblyType.Local, profile.GetAllPrefabPaths(false)
-                    .ToArray(), JobPriority.General, null, default);
+            var continuation = new Continuation(taskScheduler);
 
-                return loadTask.ContinueWith(t2 => profile, taskScheduler);
-            }, taskScheduler).Unwrap();
+            __result = taskAwaiter
+                .ContinueWith(continuation.LoadBundles, taskScheduler)
+                .Unwrap();
 
             return false;
+        }
+
+        static Profile GetFirstResult(Task<Profile[]> task)
+        {
+            return task.Result[0];
+        }
+
+        struct Continuation
+        {
+            Profile Profile;
+            TaskScheduler TaskScheduler { get; }
+
+            public Continuation(TaskScheduler taskScheduler)
+            {
+                Profile = null;
+                TaskScheduler = taskScheduler;
+            }
+
+            public Task<Profile> LoadBundles(Task<Profile> task)
+            {
+                Profile = task.Result;
+
+                Task loadTask = Singleton<PoolManager>.Instance
+                    .LoadBundlesAndCreatePools(PoolManager.PoolsCategory.Raid, 
+                                               PoolManager.AssemblyType.Local, 
+                                               Profile.GetAllPrefabPaths(false).ToArray(), 
+                                               JobPriority.General, 
+                                               null, 
+                                               default);
+
+                return loadTask.ContinueWith(GetProfile, TaskScheduler);
+            }
+
+            private Profile GetProfile(Task task)
+            {
+                return Profile;
+            }
         }
     }
 }

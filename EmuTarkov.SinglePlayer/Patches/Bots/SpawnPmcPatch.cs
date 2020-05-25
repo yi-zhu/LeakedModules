@@ -1,26 +1,36 @@
 ﻿using System.Reflection;
+using HarmonyLib;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using BotSpawner = GClass294;
+using System;
 
 namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
     public class SpawnPmcPatch : AbstractPatch
     {
-        public SpawnPmcPatch()
+        private static readonly Type targetType;
+        private static readonly AccessTools.FieldRef<object, WildSpawnType> wildSpawnTypeField;
+        private static readonly AccessTools.FieldRef<object, BotDifficulty> botDifficultyField;
+
+        static SpawnPmcPatch()
         {
-            methodName = "method_0";
-            flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            targetType = typeof(BotSpawner);
+            wildSpawnTypeField = AccessTools.FieldRefAccess<WildSpawnType>(targetType, "Type");
+            botDifficultyField = AccessTools.FieldRefAccess<BotDifficulty>(targetType, "BotDifficulty");
         }
 
         public override MethodInfo TargetMethod()
         {
-            return typeof(BotSpawner).GetMethod(methodName, flags);
+            return typeof(BotSpawner).GetMethod("method_0", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-        public static bool Prefix(ref bool __result, Profile x, WildSpawnType ___Type, BotDifficulty ___BotDifficulty)
+        public static bool Prefix(object __instance, ref bool __result, Profile x)
         {
-            __result = x.Info.Settings.Role == ___Type && x.Info.Settings.BotDifficulty == ___BotDifficulty;
+            var botType = wildSpawnTypeField(__instance);
+            var botDifficulty = botDifficultyField(__instance);
+
+            __result = x.Info.Settings.Role == botType && x.Info.Settings.BotDifficulty == botDifficulty;
 
             return false;
         }
