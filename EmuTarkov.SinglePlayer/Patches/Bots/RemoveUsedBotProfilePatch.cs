@@ -4,30 +4,30 @@ using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using BotPresets = GClass292;
 using BotData = GInterface13;
+using HarmonyLib;
+using System;
 
 namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
     public class RemoveUsedBotProfilePatch : AbstractPatch
     {
-        public static FieldInfo __field;
+        private static readonly Type targetType;
+        private static readonly AccessTools.FieldRef<object, List<Profile>> profilesField;
 
-        public RemoveUsedBotProfilePatch()
+        static RemoveUsedBotProfilePatch()
         {
-            methodName = "GetNewProfile";
-            flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            targetType = typeof(BotPresets);
+            profilesField = AccessTools.FieldRefAccess<List<Profile>>(targetType, "list_0");
         }
 
         public override MethodInfo TargetMethod()
         {
-            var __type = typeof(BotPresets);
-
-            __field = __type.GetField("list_0", BindingFlags.NonPublic | BindingFlags.Instance);
-            return __type.GetMethod(methodName, flags);
+            return targetType.GetMethod("GetNewProfile", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static bool Prefix(ref Profile __result, object __instance, BotData data)
         {
-            List<Profile> profiles = (List<Profile>)__field.GetValue(__instance);
+            List<Profile> profiles = profilesField(__instance);
 
             if (profiles.Count > 0)
             {
