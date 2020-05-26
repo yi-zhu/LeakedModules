@@ -10,9 +10,9 @@ namespace EmuTarkov.Core
 		{
             Debug.LogError("EmuTarkov.Core: Loaded");
 
-            PatcherUtil.PatchPrefix<BattleEyePatch>();
-            PatcherUtil.PatchPrefix<SslCertificatePatch>();
-            PatcherUtil.PatchPrefix<HttpRequestPatch>();
+            PatcherUtil.Patch<BattleEyePatch>();
+            PatcherUtil.Patch<SslCertificatePatch>();
+            PatcherUtil.Patch<UnityWebRequestPatch>();
         }
 	}
 }

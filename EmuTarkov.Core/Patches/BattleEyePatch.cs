@@ -5,26 +5,32 @@ using EmuTarkov.Common.Utils.Patching;
 
 namespace EmuTarkov.Core.Patches
 {
-	public class BattleEyePatch : AbstractPatch
+	public class BattleEyePatch : GenericPatch<BattleEyePatch>
 	{
         public static PropertyInfo __property;
 
-        public BattleEyePatch()
+        public BattleEyePatch() : base(prefix: nameof(PatchPrefix))
 		{
-			methodName = "RunValidation";
-			flags = BindingFlags.Public | BindingFlags.Instance;
 		}
 
-		public override MethodInfo TargetMethod()
+		protected override MethodBase GetTargetMethod()
 		{
-            var __type = PatcherConstants.TargetAssembly.GetTypes().Single(x => x.GetMethod(methodName, flags) != null);
+			var methodName = "RunValidation";
+			var flags = BindingFlags.Public | BindingFlags.Instance;
+
+			var __type = PatcherConstants.TargetAssembly
+				.GetTypes()
+				.Single(x => x.GetMethod(methodName, flags) != null);
 
             __property = __type.GetProperty("Succeed", flags);
+
             return __type.GetMethod(methodName, flags);
         }
 
-		public static bool Prefix(ref Task __result, object __instance)
+		static bool PatchPrefix(ref Task __result, object __instance)
 		{
+			UnityEngine.Debug.LogError("BattleEyePatch > Prefix()");
+
             __property.SetValue(__instance, true);
 			__result = Task.CompletedTask;
 
