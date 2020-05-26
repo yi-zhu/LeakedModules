@@ -54,15 +54,17 @@ namespace EmuTarkov.SinglePlayer.Patches.Dogtag
                 return;
             }
 
-            itemComponent.Nickname = __instance.Profile.Info.Nickname;
-            itemComponent.Side = __instance.Profile.Info.Side;
+            var victimProfileInfo = __instance.Profile.Info;
+
+            itemComponent.Nickname = victimProfileInfo.Nickname;
+            itemComponent.Side = victimProfileInfo.Side;
             itemComponent.KillerName = aggressor.Profile.Info.Nickname;
             itemComponent.Time = DateTime.Now;
             itemComponent.Status = "Killed by";
             itemComponent.WeaponName = damageInfo.Weapon.Name;
 
             if (__instance.Profile.Info.Experience > 0)
-                itemComponent.Level = __instance.Profile.Info.Level;
+                itemComponent.Level = victimProfileInfo.Level;
         }
     }
 }

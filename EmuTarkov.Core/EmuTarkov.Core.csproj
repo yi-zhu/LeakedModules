@@ -56,13 +56,21 @@
       <HintPath>..\Shared\References\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>..\Shared\References\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>..\Shared\References\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Hook\Target.cs" />
     <Compile Include="Instance.cs" />
     <Compile Include="Patches\BattleEyePatch.cs" />
-    <Compile Include="Patches\HttpRequestPatch.cs" />
     <Compile Include="Patches\SslCertificatePatch.cs" />
+    <Compile Include="Patches\UnityWebRequestPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

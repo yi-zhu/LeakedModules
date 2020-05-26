@@ -1,23 +1,25 @@
 ﻿using System.Linq;
 using System.Reflection;
 using EmuTarkov.Common.Utils.Patching;
+using UnityEngine.Networking;
 
 namespace EmuTarkov.Core.Patches
 {
-	public class SslCertificatePatch : AbstractPatch
+	public class SslCertificatePatch : GenericPatch<SslCertificatePatch>
 	{
-		public SslCertificatePatch()
+		public SslCertificatePatch() : base(prefix: nameof(PatchPrefix))
 		{
-			methodName = "ValidateCertificate";
-			flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 		}
 
-		public override MethodInfo TargetMethod()
+		protected override MethodBase GetTargetMethod()
 		{
-			return PatcherConstants.TargetAssembly.GetTypes().Single(x => x.GetMethod(methodName, flags) != null).GetMethod(methodName, flags);
+			return PatcherConstants.TargetAssembly
+				.GetTypes()
+				.Single(x => x.BaseType == typeof(CertificateHandler))
+				.GetMethod("ValidateCertificate", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 		}
 
-		public static bool Prefix(ref bool __result)
+		static bool PatchPrefix(ref bool __result)
 		{
 			__result = true;
 

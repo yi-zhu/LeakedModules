@@ -15,25 +15,48 @@ namespace EmuTarkov.SinglePlayer.Patches.Weapons
         public override MethodInfo TargetMethod()
         {
             //private void method_46(GClass1543 ammo)
-            return typeof(Player.FirearmController).GetMethod("method_46", BindingFlags.NonPublic | BindingFlags.Instance);
+            return typeof(Player.FirearmController)
+                .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Single(IsTargetMethod);
+        }
+
+        private static bool IsTargetMethod(MethodInfo methodInfo)
+        {
+            if (methodInfo.IsVirtual)
+                return false;
+
+            var parameters = methodInfo.GetParameters();
+            if (parameters.Length != 1)
+                return false;
+            if (parameters[0].ParameterType != typeof(GClass1543))
+                return false;
+            if (parameters[0].Name != "ammo")
+                return false;
+
+            var methodBody = methodInfo.GetMethodBody();
+            if (methodBody.LocalVariables.Any(x => x.LocalType == typeof(Vector3)))
+                return true;
+
+            return false;
         }
 
         public static void Postfix(Player.FirearmController __instance, GClass1543 ammo)
         {
-            float durability = __instance.Item.Repairable.Durability;
+            var item = __instance.Item;
+            float durability = item.Repairable.Durability;
             
             if (durability <= 0f)
                 return;
 
             float deterioration = ammo.Deterioration;
 
-            float operatingResource = __instance.Item.Template.OperatingResource > 0
-                ? __instance.Item.Template.OperatingResource
+            float operatingResource = item.Template.OperatingResource > 0
+                ? item.Template.OperatingResource
                 : 1;
 
-            durability -= __instance.Item.Repairable.MaxDurability / operatingResource * deterioration;
+            durability -= item.Repairable.MaxDurability / operatingResource * deterioration;
 
-            __instance.Item.Repairable.Durability = durability > 0
+            item.Repairable.Durability = durability > 0
                 ? durability
                 : 0;
         }

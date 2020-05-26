@@ -2,7 +2,6 @@
 using EmuTarkov.SinglePlayer.Patches;
 using EmuTarkov.SinglePlayer.Patches.Bots;
 using EmuTarkov.SinglePlayer.Patches.Location;
-using EmuTarkov.SinglePlayer.Monitors;
 using Comfort.Common;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
@@ -21,7 +20,8 @@ namespace EmuTarkov.SinglePlayer
 		{
             Debug.LogError("EmuTarkov.SinglePlayer: Loaded");
 
-            new BotLimits();
+            // todo: find a way to get php session id
+            BotLimits.RequestData(null, Utils.Config.BackendUrl);
 
             PatcherUtil.PatchPostfix<BotTemplateLimitPatch>();
             PatcherUtil.PatchPrefix<GetNewBotTemplatesPatch>();
@@ -37,15 +37,5 @@ namespace EmuTarkov.SinglePlayer
 
             PatcherUtil.PatchPostfix<DogtagPatch>();
         }
-
-        private void FixedUpdate()
-        {
-            MainApplication mainApplication = ClientAppUtils.GetMainApp();
-
-            if (mainApplication != null)
-            {
-                BotLimits.RequestData();
-            }
-        }
-	}
+    }
 }
