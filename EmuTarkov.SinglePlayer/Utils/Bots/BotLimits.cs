@@ -1,7 +1,5 @@
 ﻿using EmuTarkov.Common.Utils.HTTP;
 using EmuTarkov.SinglePlayer.Utils.Reflection;
-using ISession = GInterface23;
-using ClientConfig = GClass266;
 using UnityEngine;
 using Newtonsoft.Json;
 
@@ -9,24 +7,11 @@ namespace EmuTarkov.SinglePlayer.Utils.Bots
 {
     public class BotLimits
     {
-        public static BotLimitsData Data;
+        public static BotLimitsData Data { get; private set; }
 
-        public BotLimits()
+        public static void RequestData(string session, string backendUrl)
         {
-            Data = null;
-        }
-
-        public static void RequestData()
-        {
-            ISession session = ClientAppUtils.GetBackendSession();
-            string backendUrl = ClientConfig.Config.BackendUrl;
-
-            if (Data != null || session == null)
-            {
-                return;
-            }
-
-            string json = new Request(session.GetPhpSessionId(), backendUrl).GetJson("/client/game/bots/limits");
+            string json = new Request(session, backendUrl).GetJson("/client/game/bots/limits");
             Data = JsonConvert.DeserializeObject<BotLimitsData>(json);
 
             if (Data == null)
