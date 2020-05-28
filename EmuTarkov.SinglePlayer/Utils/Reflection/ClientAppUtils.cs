@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Comfort.Common;
 using EFT;
-using ISession = GInterface23;
+using ISession = GInterface24;
 
 namespace EmuTarkov.SinglePlayer.Utils.Reflection
 {

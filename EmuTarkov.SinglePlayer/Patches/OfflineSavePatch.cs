@@ -1,5 +1,4 @@
-﻿using Comfort.Common;
-using EFT;
+﻿using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using EmuTarkov.SinglePlayer.Utils.Player;
 using System;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Comfort.Common;
 
 namespace EmuTarkov.SinglePlayer.Patches
 {
@@ -19,18 +19,18 @@ namespace EmuTarkov.SinglePlayer.Patches
                     .GetMethod("method_37", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-        public static void Prefix(GInterface22 ____backEnd, ESideType ___esideType_0, Result<ExitStatus, TimeSpan, GClass1240> result)
+        public static void Prefix(ESideType ___esideType_0, Result<ExitStatus, TimeSpan, GClass1240> result)
         {
-            string backendUrl = GClass266.Config.BackendUrl;
+            string backendUrl = Utils.Config.BackendUrl;
 
-            var session = ____backEnd.Session;
+            var session = Utils.Config.BackEndSession;
 
             bool isPlayerScav = false;
 
-            var profile = ____backEnd.Session.Profile;
+            var profile = session.Profile;
             if (___esideType_0 == ESideType.Savage)
             {
-                profile = ____backEnd.Session.ProfileOfPet;
+                profile = session.ProfileOfPet;
                 isPlayerScav = true;
             }
 

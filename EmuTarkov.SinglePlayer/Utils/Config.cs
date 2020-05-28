@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISession = GInterface23;
+using ISession = GInterface24;
 using ClientConfig = GClass266;
 using Comfort.Common;
 using EFT;
