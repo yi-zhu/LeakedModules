@@ -6,13 +6,16 @@ using EmuTarkov.Common.Utils.Patching;
 using LocationInfo = GClass736.GClass738;
 using LocationMatch = GClass736.GClass737;
 using JsonInfo = GClass393;
+using UnityEngine;
+using System;
+using EFT.InventoryLogic;
+using System.Linq;
 
 namespace EmuTarkov.SinglePlayer.Patches.Location
 {
 	public class OfflineLootPatch : AbstractPatch
 	{
-		public static MethodInfo __method;
-		public static PropertyInfo __property;
+		public static PropertyInfo _property;
 
 		public OfflineLootPatch()
 		{
@@ -24,8 +27,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 		{
 			var localGameBaseType = PatcherConstants.LocalGameType.BaseType;
 
-			__property = localGameBaseType.GetProperty($"{nameof(GClass736.GClass738)}_0", BindingFlags.NonPublic | BindingFlags.Instance);
-			__method = localGameBaseType.GetMethod("smethod_3", BindingFlags.NonPublic | BindingFlags.Static);
+			_property = localGameBaseType.GetProperty($"{nameof(GClass736.GClass738)}_0", BindingFlags.NonPublic | BindingFlags.Instance);
 			return localGameBaseType.GetMethod(methodName, flags);
 		}
 
@@ -38,23 +40,32 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 			if (__instance.GetType() != PatcherConstants.LocalGameType)
 			{
 				// online match
+				Debug.LogError("OfflineLootPatch > Online match?!");
 				return true;
 			}
 
-			var location = (LocationInfo)__property.GetValue(__instance);
-			var json = new Request(null, backendUrl).GetJson("/api/location/" + location.Id);
-			var locationLoot = JsonConvert.DeserializeObject<JsonInfo>(json);
+			var location = (LocationInfo)_property.GetValue(__instance);
+			var json = new Request(Utils.Config.BackEndSession.GetPhpSessionId(), backendUrl).GetJson("/api/location/" + location.Id);
+			var locationLoot = json.ParseJsonTo<LocationInfo>(Array.Empty<JsonConverter>());
+
+			// uncomment to dump client location data
+			/*
+			foreach (var num in Enumerable.Range(1, 6))
+			{
+				var loot = GClass407.Load<TextAsset>($"LocalLoot/{location.Id}{num}").text;
+				System.IO.File.WriteAllText($"{___gclass738_0.Id}_{num}.json", loot);
+			}
+			*/
 
 			if (locationLoot == null)
 			{
 				// failed to download loot
+				Debug.LogError("OfflineLootPatch > Failed to download loot, using fallback");
 				return true;
 			}
 
-			__result = (Task<LocationInfo>)__method.Invoke(null, new[] { new LocationMatch() {
-				BackendUrl = backendUrl,
-				Location = locationLoot
-			}});
+			Debug.LogError("OfflineLootPatch > Successfully received loot from server");
+			__result = Task.FromResult(locationLoot);
 
 			return false;
 		}
