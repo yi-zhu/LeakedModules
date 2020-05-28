@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using EmuTarkov.Common.Utils.HTTP;
 using EmuTarkov.Common.Utils.Patching;
-using LocationInfo = GClass736.GClass738;
+using LocationInfo = GClass729.GClass731;
 using UnityEngine;
 
 namespace EmuTarkov.SinglePlayer.Patches.Location
@@ -23,7 +23,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 		{
 			var localGameBaseType = PatcherConstants.LocalGameType.BaseType;
 
-			_property = localGameBaseType.GetProperty($"{nameof(GClass736.GClass738)}_0", BindingFlags.NonPublic | BindingFlags.Instance);
+			_property = localGameBaseType.GetProperty($"{nameof(GClass729.GClass731)}_0", BindingFlags.NonPublic | BindingFlags.Instance);
 			return localGameBaseType.GetMethod(methodName, flags);
 		}
 
