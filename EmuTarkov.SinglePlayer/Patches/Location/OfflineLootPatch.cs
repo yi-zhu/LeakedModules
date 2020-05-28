@@ -1,15 +1,11 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using EmuTarkov.Common.Utils.HTTP;
 using EmuTarkov.Common.Utils.Patching;
 using LocationInfo = GClass736.GClass738;
-using LocationMatch = GClass736.GClass737;
-using JsonInfo = GClass393;
 using UnityEngine;
-using System;
-using EFT.InventoryLogic;
-using System.Linq;
 
 namespace EmuTarkov.SinglePlayer.Patches.Location
 {
@@ -45,7 +41,11 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 			}
 
 			var location = (LocationInfo)_property.GetValue(__instance);
-			var json = new Request(Utils.Config.BackEndSession.GetPhpSessionId(), backendUrl).GetJson("/api/location/" + location.Id);
+			var request = new Request(Utils.Config.BackEndSession.GetPhpSessionId(), backendUrl);
+
+			request.PostJson("/raid/map/name", new LocationName(location.Id).ToJson(Array.Empty<JsonConverter>()));
+
+			var json = request.GetJson("/api/location/" + location.Id);
 			var locationLoot = json.ParseJsonTo<LocationInfo>(Array.Empty<JsonConverter>());
 
 			// uncomment to dump client location data
@@ -68,6 +68,16 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 			__result = Task.FromResult(locationLoot);
 
 			return false;
+		}
+
+		struct LocationName
+		{
+			public string Location { get; }
+
+			public LocationName(string location)
+			{
+				Location = location;
+			}
 		}
 	}
 }

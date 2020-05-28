@@ -74,6 +74,18 @@ namespace EmuTarkov.Common.Utils.HTTP
 			}
 		}
 
+		public string PostJson(string url, string data, bool compress = true)
+		{
+			using (Stream stream = Send(url, "POST", data, compress))
+			{
+				using (MemoryStream ms = new MemoryStream())
+				{
+					stream.CopyTo(ms);
+					return SimpleZlib.Decompress(ms.ToArray(), null);
+				}
+			}
+		}
+
 		public Texture2D GetImage(string url, bool compress = true)
 		{
 			using (Stream stream = Send(url, "GET", null, compress))
