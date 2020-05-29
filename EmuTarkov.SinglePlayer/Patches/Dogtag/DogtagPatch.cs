@@ -19,6 +19,10 @@ namespace EmuTarkov.SinglePlayer.Patches.Dogtag
 
         static DogtagPatch()
         {
+            // compile-time checks
+            _ = nameof(Equipment.GetSlot);
+            _ = nameof(DamageInfo.Weapon);
+
             getEquipmentProperty = typeof(Player)
                 .GetProperty("Equipment", BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetGetMethod(true)

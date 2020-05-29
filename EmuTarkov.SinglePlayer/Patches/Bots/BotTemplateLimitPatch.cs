@@ -10,6 +10,13 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
     public class BotTemplateLimitPatch : AbstractPatch
     {
+        static BotTemplateLimitPatch()
+        {
+            // compile-time checks
+            _ = nameof(BotsPresets.CreateProfile);
+            _ = nameof(WaveInfo.Difficulty);
+        }
+
         public override MethodInfo TargetMethod()
         {
             return typeof(BotsPresets)

@@ -13,6 +13,12 @@ namespace EmuTarkov.SinglePlayer.Patches.Weapons
 {
     class WeaponDurabilityPatch : AbstractPatch
     {
+        static WeaponDurabilityPatch()
+        {
+            // compile-time check
+            _ = nameof(AmmoInfo.AmmoLifeTimeSec);
+        }
+
         public override MethodInfo TargetMethod()
         {
             //private void method_46(GClass1564 ammo)

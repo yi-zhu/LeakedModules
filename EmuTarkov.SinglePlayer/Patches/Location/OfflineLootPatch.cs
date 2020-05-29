@@ -13,6 +13,12 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 	{
 		public static PropertyInfo _property;
 
+		static OfflineLootPatch()
+		{
+			// compile-time check
+			_ = nameof(LocationInfo.BotLocationModifier);
+		}
+
 		public OfflineLootPatch()
 		{
 			methodName = "method_5";

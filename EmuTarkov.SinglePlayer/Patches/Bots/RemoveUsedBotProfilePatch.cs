@@ -17,6 +17,9 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 
         static RemoveUsedBotProfilePatch()
         {
+            // compile-time check
+            _ = nameof(BotData.ChooseProfile);
+
             targetInterface = PatcherConstants.TargetAssembly
                 .GetTypes()
                 .Single(IsTargetInterface);

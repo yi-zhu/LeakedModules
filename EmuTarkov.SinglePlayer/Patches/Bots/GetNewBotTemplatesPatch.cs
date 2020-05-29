@@ -23,6 +23,14 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 
         static GetNewBotTemplatesPatch()
         {
+            // compile-time checks
+            _ = nameof(WaveInfo.Difficulty);
+            _ = nameof(BotsPresets.GetNewProfile);
+            _ = nameof(BotData.PrepareToLoadBackend);
+            _ = nameof(PoolManager.LoadBundlesAndCreatePools);
+            _ = nameof(JobPriority.General);
+
+            // creating delegate
             _getNewProfileFunc = typeof(BotsPresets)
                 .GetMethod("GetNewProfile", BindingFlags.NonPublic | BindingFlags.Instance)
                 .CreateDelegate(typeof(Func<BotsPresets, BotData, Profile>)) as Func<BotsPresets, BotData, Profile>;
