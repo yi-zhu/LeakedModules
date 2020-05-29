@@ -8,12 +8,11 @@ using Comfort.Common;
 using HarmonyLib;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
-using ISession = GInterface23;
-using WaveInfo = GClass872;
-using BotsPresets = GClass292;
+using WaveInfo = GClass865;
+using BotsPresets = GClass294;
 using BotData = GInterface13;
-using PoolManager = GClass1088;
-using JobPriority = GClass592;
+using PoolManager = GClass1081;
+using JobPriority = GClass584;
 
 namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
@@ -21,15 +20,20 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
     {
         public static FieldInfo __field;
         private static readonly Func<BotsPresets, BotData, Profile> _getNewProfileFunc;
-        private static readonly AccessTools.FieldRef<object, ISession> _sessionField;
 
         static GetNewBotTemplatesPatch()
         {
+            // compile-time checks
+            _ = nameof(WaveInfo.Difficulty);
+            _ = nameof(BotsPresets.GetNewProfile);
+            _ = nameof(BotData.PrepareToLoadBackend);
+            _ = nameof(PoolManager.LoadBundlesAndCreatePools);
+            _ = nameof(JobPriority.General);
+
+            // creating delegate
             _getNewProfileFunc = typeof(BotsPresets)
                 .GetMethod("GetNewProfile", BindingFlags.NonPublic | BindingFlags.Instance)
                 .CreateDelegate(typeof(Func<BotsPresets, BotData, Profile>)) as Func<BotsPresets, BotData, Profile>;
-
-            _sessionField = AccessTools.FieldRefAccess<ISession>(typeof(BotsPresets), $"{nameof(GInterface23).ToLower()}_0");
         }
 
         public override MethodInfo TargetMethod()
@@ -51,7 +55,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
                 then perform request to server and get only first value of resulting single element collection
             */
 
-            var session = _sessionField(__instance);
+            var session = Utils.Config.BackEndSession;
             if (session == null)
                 throw new InvalidOperationException("Something went wrong. Where is session?");
 

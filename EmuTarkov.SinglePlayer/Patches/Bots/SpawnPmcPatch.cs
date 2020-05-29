@@ -2,27 +2,59 @@
 using HarmonyLib;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
-using BotSpawner = GClass294;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
     public class SpawnPmcPatch : AbstractPatch
     {
+        private static readonly Type targetInterface;
         private static readonly Type targetType;
+
         private static readonly AccessTools.FieldRef<object, WildSpawnType> wildSpawnTypeField;
         private static readonly AccessTools.FieldRef<object, BotDifficulty> botDifficultyField;
 
         static SpawnPmcPatch()
         {
-            targetType = typeof(BotSpawner);
+            targetInterface = PatcherConstants.TargetAssembly
+                .GetTypes()
+                .Single(IsTargetInterface);
+            targetType = PatcherConstants.TargetAssembly
+                .GetTypes()
+                .Single(IsTargetType);
+
             wildSpawnTypeField = AccessTools.FieldRefAccess<WildSpawnType>(targetType, "Type");
             botDifficultyField = AccessTools.FieldRefAccess<BotDifficulty>(targetType, "BotDifficulty");
         }
 
+        private static bool IsTargetInterface(Type type)
+        {
+            if (!type.IsInterface)
+                return false;
+            if (type.GetMethod("ChooseProfile", new[] { typeof(List<Profile>), typeof(bool) }) == null)
+                return false;
+            return true;
+        }
+
+        private static bool IsTargetType(Type type)
+        {
+            if (!targetInterface.IsAssignableFrom(type))
+                return false;
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            if (!fields.Any(x => x.FieldType == typeof(BotDifficulty) && x.Name == "BotDifficulty"))
+                return false;
+            if (!fields.Any(x => x.FieldType == typeof(EPlayerSide) && x.Name == "Side"))
+                return false;
+            if (!fields.Any(x => x.FieldType == typeof(WildSpawnType) && x.Name == "Type"))
+                return false;
+            return true;
+        }
+
         public override MethodInfo TargetMethod()
         {
-            return typeof(BotSpawner).GetMethod("method_0", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            return targetType.GetMethod("method_0", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static bool Prefix(object __instance, ref bool __result, Profile x)

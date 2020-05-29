@@ -3,13 +3,20 @@ using System.Reflection;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using EmuTarkov.SinglePlayer.Utils.Bots;
-using WaveInfo = GClass872;
-using BotsPresets = GClass292;
+using WaveInfo = GClass865;
+using BotsPresets = GClass294;
 
 namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
     public class BotTemplateLimitPatch : AbstractPatch
     {
+        static BotTemplateLimitPatch()
+        {
+            // compile-time checks
+            _ = nameof(BotsPresets.CreateProfile);
+            _ = nameof(WaveInfo.Difficulty);
+        }
+
         public override MethodInfo TargetMethod()
         {
             return typeof(BotsPresets)

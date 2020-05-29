@@ -8,8 +8,8 @@ using EFT;
 using EFT.InventoryLogic;
 using EmuTarkov.Common.Utils.Patching;
 using UnityEngine;
-using Equipment = GClass1526;
-using DamageInfo = GStruct204;
+using Equipment = GClass1547;
+using DamageInfo = GStruct203;
 
 namespace EmuTarkov.SinglePlayer.Patches.Dogtag
 {
@@ -19,6 +19,10 @@ namespace EmuTarkov.SinglePlayer.Patches.Dogtag
 
         static DogtagPatch()
         {
+            // compile-time checks
+            _ = nameof(Equipment.GetSlot);
+            _ = nameof(DamageInfo.Weapon);
+
             getEquipmentProperty = typeof(Player)
                 .GetProperty("Equipment", BindingFlags.NonPublic | BindingFlags.Instance)
                 .GetGetMethod(true)

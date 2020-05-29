@@ -7,14 +7,21 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using AmmoInfo = GClass1564;
 
 namespace EmuTarkov.SinglePlayer.Patches.Weapons
 {
     class WeaponDurabilityPatch : AbstractPatch
     {
+        static WeaponDurabilityPatch()
+        {
+            // compile-time check
+            _ = nameof(AmmoInfo.AmmoLifeTimeSec);
+        }
+
         public override MethodInfo TargetMethod()
         {
-            //private void method_46(GClass1543 ammo)
+            //private void method_46(GClass1564 ammo)
             return typeof(Player.FirearmController)
                 .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
                 .Single(IsTargetMethod);
@@ -28,7 +35,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Weapons
             var parameters = methodInfo.GetParameters();
             if (parameters.Length != 1)
                 return false;
-            if (parameters[0].ParameterType != typeof(GClass1543))
+            if (parameters[0].ParameterType != typeof(AmmoInfo))
                 return false;
             if (parameters[0].Name != "ammo")
                 return false;
@@ -40,7 +47,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Weapons
             return false;
         }
 
-        public static void Postfix(Player.FirearmController __instance, GClass1543 ammo)
+        public static void Postfix(Player.FirearmController __instance, AmmoInfo ammo)
         {
             var item = __instance.Item;
             float durability = item.Repairable.Durability;
