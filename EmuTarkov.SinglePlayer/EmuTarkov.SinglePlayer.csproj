@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.0.1\lib\net45\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony">
+      <HintPath>..\Shared\References\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -41,11 +41,6 @@
     </Reference>
     <Reference Include="Comfort">
       <HintPath>..\Shared\References\Comfort.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Shared\References\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NLog">
@@ -61,16 +56,8 @@
       <HintPath>..\Shared\References\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>..\Shared\References\UnityEngine.Networking.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\Shared\References\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>..\Shared\References\UnityEngine.UnityWebRequestModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -84,7 +71,7 @@
     <Compile Include="Patches\Dogtag\DogtagPatch.cs" />
     <Compile Include="Patches\Location\OfflineLootPatch.cs" />
     <Compile Include="Patches\Matchmaker\MatchmakerOfflineRaidPatch.cs" />
-    <Compile Include="Patches\OfflineSavePatch.cs" />
+    <Compile Include="Patches\Progression\OfflineSavePatch.cs" />
     <Compile Include="Patches\Quests\BeaconPatch.cs" />
     <Compile Include="Patches\Weapons\WeaponDurabilityPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,9 +84,6 @@
     <Compile Include="Utils\Reflection\PrivateValueAccessor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EmuTarkov.Common\EmuTarkov.Common.csproj">
       <Project>{7584f43a-5937-417e-abf4-c5f680f300fb}</Project>
       <Name>EmuTarkov.Common</Name>
@@ -108,6 +92,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y /I $(TargetDir)*.dll $(SolutionDir)\Build\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y /I $(TargetDir)*.dll $(SolutionDir)\Build\EscapeFromTarkov_Data\Managed\</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using EFT;
+using EmuTarkov.Common.Utils.App;
 using EmuTarkov.Common.Utils.HTTP;
 
 namespace EmuTarkov.SinglePlayer.Utils.Player
@@ -14,7 +15,7 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
 				isPlayerScav = isPlayerScav
 			};
 
-			new Request(session, backendUrl).PutJson("/raid/profile/save", request.ToJson());
+			new Request(session, backendUrl).PutJson("/raid/profile/save", Json.Serialize(request));
 		}
 
 		internal class SaveProfileRequest

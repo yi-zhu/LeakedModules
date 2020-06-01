@@ -8,25 +8,18 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Comfort.Common;
-using ClientMetrics = GClass1260;
 
 namespace EmuTarkov.SinglePlayer.Patches
 {
     class OfflineSaveProfilePatch : AbstractPatch
     {
-        static OfflineSaveProfilePatch()
-        {
-            // compile-time check
-            _ = nameof(ClientMetrics.Metrics);
-        }
-
         public override MethodInfo TargetMethod()
         {
             return PatcherConstants.MainApplicationType
                     .GetMethod("method_37", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-        public static void Prefix(ESideType ___esideType_0, Result<ExitStatus, TimeSpan, ClientMetrics> result)
+        public static void Prefix(ESideType ___esideType_0, Result<ExitStatus, TimeSpan, GClass1240> result)
         {
             string backendUrl = Utils.Config.BackendUrl;
 

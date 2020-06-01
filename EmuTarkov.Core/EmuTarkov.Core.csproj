@@ -39,10 +39,6 @@
       <HintPath>..\Shared\References\Comfort.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Shared\References\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\Shared\References\NLog.dll</HintPath>
       <Private>False</Private>
@@ -82,6 +78,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y /I $(TargetDir)*.dll $(SolutionDir)\Build\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y /I $(TargetDir)*.dll $(SolutionDir)\Build\EscapeFromTarkov_Data\Managed\</PostBuildEvent>
   </PropertyGroup>
 </Project>

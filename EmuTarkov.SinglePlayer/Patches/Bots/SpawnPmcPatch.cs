@@ -1,10 +1,10 @@
-﻿using System.Reflection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace EmuTarkov.SinglePlayer.Patches.Bots
 {
@@ -18,37 +18,38 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 
         static SpawnPmcPatch()
         {
-            targetInterface = PatcherConstants.TargetAssembly
-                .GetTypes()
-                .Single(IsTargetInterface);
-            targetType = PatcherConstants.TargetAssembly
-                .GetTypes()
-                .Single(IsTargetType);
-
+            targetInterface = PatcherConstants.TargetAssembly.GetTypes().Single(IsTargetInterface);
+            targetType = PatcherConstants.TargetAssembly.GetTypes().Single(IsTargetType);
             wildSpawnTypeField = AccessTools.FieldRefAccess<WildSpawnType>(targetType, "Type");
             botDifficultyField = AccessTools.FieldRefAccess<BotDifficulty>(targetType, "BotDifficulty");
         }
 
         private static bool IsTargetInterface(Type type)
         {
-            if (!type.IsInterface)
+            if (!type.IsInterface || type.GetMethod("ChooseProfile", new[] { typeof(List<Profile>), typeof(bool) }) == null)
+            {
                 return false;
-            if (type.GetMethod("ChooseProfile", new[] { typeof(List<Profile>), typeof(bool) }) == null)
-                return false;
+            }
+
             return true;
         }
 
         private static bool IsTargetType(Type type)
         {
             if (!targetInterface.IsAssignableFrom(type))
+            {
                 return false;
+            }
+
             var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
-            if (!fields.Any(x => x.FieldType == typeof(BotDifficulty) && x.Name == "BotDifficulty"))
+
+            if (!fields.Any(x => x.FieldType == typeof(BotDifficulty) && x.Name == "BotDifficulty")
+            || !fields.Any(x => x.FieldType == typeof(EPlayerSide) && x.Name == "Side")
+            || !fields.Any(x => x.FieldType == typeof(WildSpawnType) && x.Name == "Type"))
+            {
                 return false;
-            if (!fields.Any(x => x.FieldType == typeof(EPlayerSide) && x.Name == "Side"))
-                return false;
-            if (!fields.Any(x => x.FieldType == typeof(WildSpawnType) && x.Name == "Type"))
-                return false;
+            }
+
             return true;
         }
 

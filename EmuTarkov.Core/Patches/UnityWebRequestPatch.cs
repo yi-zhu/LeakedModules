@@ -1,12 +1,6 @@
-﻿using EmuTarkov.Common.Utils.Patching;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using System.Reflection;
 using UnityEngine.Networking;
+using EmuTarkov.Common.Utils.Patching;
 
 namespace EmuTarkov.Core.Patches
 {
@@ -14,15 +8,11 @@ namespace EmuTarkov.Core.Patches
     {
         private static readonly CertificateHandler _certificateHandler = new FakeCertificateHandler();
 
-        public UnityWebRequestPatch() : base(postfix: nameof(PatchPostfix))
-        {
-
-        }
+        public UnityWebRequestPatch() : base(postfix: nameof(PatchPostfix)) {}
 
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(UnityWebRequestTexture)
-                .GetMethod(nameof(UnityWebRequestTexture.GetTexture), new[] { typeof(string) });
+            return typeof(UnityWebRequestTexture).GetMethod(nameof(UnityWebRequestTexture.GetTexture), new[] { typeof(string) });
         }
 
         static void PatchPostfix(UnityWebRequest __result)
@@ -32,7 +22,7 @@ namespace EmuTarkov.Core.Patches
             __result.timeout = 1000;
         }
 
-        class FakeCertificateHandler : CertificateHandler
+        internal class FakeCertificateHandler : CertificateHandler
         {
             protected override bool ValidateCertificate(byte[] certificateData)
             {

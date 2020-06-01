@@ -32,11 +32,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.0.1\lib\net45\0Harmony.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Shared\References\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Shared\References\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Shared\References\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\Shared\References\NLog.dll</HintPath>
@@ -52,15 +57,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>References\UnityEngine.ImageConversionModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>References\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>..\Shared\References\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="zlib.net">
-      <HintPath>References\zlib.net.dll</HintPath>
+      <HintPath>..\Shared\References\zlib.net.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -68,6 +69,8 @@
     <Compile Include="Hook\Target.cs" />
     <Compile Include="Instance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\App\Json.cs" />
+    <Compile Include="Utils\App\ProcessMonitor.cs" />
     <Compile Include="Utils\Hook\Loader.cs" />
     <Compile Include="Utils\HTTP\Request.cs" />
     <Compile Include="Utils\Patching\AbstractPatch.cs" />
@@ -75,11 +78,9 @@
     <Compile Include="Utils\Patching\PatcherConstants.cs" />
     <Compile Include="Utils\Patching\PatcherUtil.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y /I $(TargetDir)*.dll $(SolutionDir)\Build\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y /I $(TargetDir)*.dll $(SolutionDir)\Build\EscapeFromTarkov_Data\Managed\
+xcopy /Y /I $(SolutionDir)\Shared\References\Assembly-CSharp.dll $(SolutionDir)\Build\EscapeFromTarkov_Data\Managed\</PostBuildEvent>
   </PropertyGroup>
 </Project>

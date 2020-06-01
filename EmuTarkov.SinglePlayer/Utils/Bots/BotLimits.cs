@@ -1,7 +1,6 @@
-﻿using EmuTarkov.Common.Utils.HTTP;
-using EmuTarkov.SinglePlayer.Utils.Reflection;
+﻿using EmuTarkov.Common.Utils.App;
+using EmuTarkov.Common.Utils.HTTP;
 using UnityEngine;
-using Newtonsoft.Json;
 
 namespace EmuTarkov.SinglePlayer.Utils.Bots
 {
@@ -12,7 +11,8 @@ namespace EmuTarkov.SinglePlayer.Utils.Bots
         public static void RequestData(string session, string backendUrl)
         {
             string json = new Request(session, backendUrl).GetJson("/client/game/bots/limits");
-            Data = JsonConvert.DeserializeObject<BotLimitsData>(json);
+
+            Data = Json.Deserialize<BotLimitsData>(json);
 
             if (Data == null)
             {

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 using EFT;
 using EFT.InventoryLogic;
 using EmuTarkov.Common.Utils.Patching;
-using UnityEngine;
 using Equipment = GClass1547;
 using DamageInfo = GStruct203;
 
@@ -31,19 +27,20 @@ namespace EmuTarkov.SinglePlayer.Patches.Dogtag
 
         public override MethodInfo TargetMethod()
         {
-            return typeof(Player)
-                .GetMethod("OnBeenKilledByAggressor", BindingFlags.NonPublic | BindingFlags.Instance);
+            return typeof(Player).GetMethod("OnBeenKilledByAggressor", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
         public static void Postfix(Player __instance, Player aggressor, DamageInfo damageInfo)
         {
             if (__instance.Profile.Info.Side == EPlayerSide.Savage)
+            {
                 return;
+            }
 
             var equipment = getEquipmentProperty(__instance);
             var dogtagSlot = equipment.GetSlot(EFT.InventoryLogic.EquipmentSlot.Dogtag);
-
             var dogtagItem = dogtagSlot.ContainedItem as Item;
+
             if (dogtagItem == null)
             {
                 Debug.LogError("DogtagPatch error > DogTag slot item is null somehow.");
@@ -68,7 +65,9 @@ namespace EmuTarkov.SinglePlayer.Patches.Dogtag
             itemComponent.WeaponName = damageInfo.Weapon.Name;
 
             if (__instance.Profile.Info.Experience > 0)
+            {
                 itemComponent.Level = victimProfileInfo.Level;
+            }
         }
     }
 }

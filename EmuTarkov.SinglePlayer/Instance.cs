@@ -1,16 +1,13 @@
 ﻿using UnityEngine;
-using EmuTarkov.SinglePlayer.Patches;
-using EmuTarkov.SinglePlayer.Patches.Bots;
-using EmuTarkov.SinglePlayer.Patches.Location;
-using Comfort.Common;
-using EFT;
 using EmuTarkov.Common.Utils.Patching;
-using EmuTarkov.SinglePlayer.Utils.Bots;
-using EmuTarkov.SinglePlayer.Utils.Reflection;
-using EmuTarkov.SinglePlayer.Patches.Quests;
-using EmuTarkov.SinglePlayer.Patches.Matchmaker;
-using EmuTarkov.SinglePlayer.Patches.Weapons;
+using EmuTarkov.SinglePlayer.Patches.Bots;
 using EmuTarkov.SinglePlayer.Patches.Dogtag;
+using EmuTarkov.SinglePlayer.Patches.Location;
+using EmuTarkov.SinglePlayer.Patches.Matchmaker;
+using EmuTarkov.SinglePlayer.Patches.Progression;
+using EmuTarkov.SinglePlayer.Patches.Quests;
+using EmuTarkov.SinglePlayer.Patches.Weapons;
+using EmuTarkov.SinglePlayer.Utils.Bots;
 
 namespace EmuTarkov.SinglePlayer
 {

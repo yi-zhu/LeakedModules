@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Comfort.Common;
+using EFT;
 using ISession = GInterface24;
 using ClientConfig = GClass266;
-using Comfort.Common;
-using EFT;
 
 namespace EmuTarkov.SinglePlayer.Utils
 {
-    class Config
+    public static class Config
     {
         static Config()
         {
@@ -19,7 +14,6 @@ namespace EmuTarkov.SinglePlayer.Utils
         }
 
         public static ISession BackEndSession => Singleton<ClientApplication>.Instance.GetClientBackEndSession();
-
         public static string BackendUrl => ClientConfig.Config.BackendUrl;
     }
 }

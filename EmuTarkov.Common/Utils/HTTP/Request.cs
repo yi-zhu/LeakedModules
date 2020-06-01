@@ -57,9 +57,7 @@ namespace EmuTarkov.Common.Utils.HTTP
 
 		public void PutJson(string url, string data, bool compress = true)
 		{
-			using (var stream = Send(url, "PUT", data, compress))
-			{
-			}
+			using (Stream stream = Send(url, "PUT", data, compress)) {}
 		}
 
 		public string GetJson(string url, bool compress = true)

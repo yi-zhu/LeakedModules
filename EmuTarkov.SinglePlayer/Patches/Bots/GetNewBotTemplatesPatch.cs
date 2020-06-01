@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Comfort.Common;
-using HarmonyLib;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
 using WaveInfo = GClass865;
@@ -38,8 +38,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 
         public override MethodInfo TargetMethod()
         {
-            return typeof(BotsPresets)
-                .GetMethod("method_2", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            return typeof(BotsPresets).GetMethod("method_2", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static bool Prefix(ref Task<Profile> __result, BotsPresets __instance, BotData data)
@@ -56,9 +55,6 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
             */
 
             var session = Utils.Config.BackEndSession;
-            if (session == null)
-                throw new InvalidOperationException("Something went wrong. Where is session?");
-
             Task<Profile> taskAwaiter = null;
             TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
@@ -69,25 +65,20 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
             {
                 // load from server
                 Debug.LogError("EmuTarkov.SinglePlayer: Loading bot profile from server");
-
                 List<WaveInfo> source = data.PrepareToLoadBackend(1).ToList();
-                taskAwaiter = session.LoadBots(source)
-                    .ContinueWith(GetFirstResult, taskScheduler);
+                taskAwaiter = session.LoadBots(source).ContinueWith(GetFirstResult, taskScheduler);
             }
             else
             {
                 // return cached profile
                 Debug.LogError("EmuTarkov.SinglePlayer: Loading bot profile from cache");
-
                 taskAwaiter = Task.FromResult(profile);
             }
 
             // load bundles for bot profile
             var continuation = new Continuation(taskScheduler);
 
-            __result = taskAwaiter
-                .ContinueWith(continuation.LoadBundles, taskScheduler)
-                .Unwrap();
+            __result = taskAwaiter.ContinueWith(continuation.LoadBundles, taskScheduler).Unwrap();
 
             return false;
         }
@@ -118,7 +109,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
                                                Profile.GetAllPrefabPaths(false).ToArray(), 
                                                JobPriority.General, 
                                                null, 
-                                               default);
+                                               default(CancellationToken));
 
                 return loadTask.ContinueWith(GetProfile, TaskScheduler);
             }
