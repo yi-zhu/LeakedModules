@@ -15,7 +15,8 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
 				isPlayerScav = isPlayerScav
 			};
 
-			new Request(session, backendUrl).PutJson("/raid/profile/save", Json.Serialize(request));
+			// ToJson() uses an internal converter which prevents loops and do other internal things
+			new Request(session, backendUrl).PutJson("/raid/profile/save", request.ToJson());
 		}
 
 		internal class SaveProfileRequest
