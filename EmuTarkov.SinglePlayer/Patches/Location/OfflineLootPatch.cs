@@ -5,6 +5,8 @@ using EmuTarkov.Common.Utils.App;
 using EmuTarkov.Common.Utils.HTTP;
 using EmuTarkov.Common.Utils.Patching;
 using LocationInfo = GClass729.GClass731;
+using System;
+using Newtonsoft.Json;
 
 namespace EmuTarkov.SinglePlayer.Patches.Location
 {
@@ -48,9 +50,11 @@ namespace EmuTarkov.SinglePlayer.Patches.Location
 			var location = (LocationInfo)_property.GetValue(__instance);
 			var request = new Request(Utils.Config.BackEndSession.GetPhpSessionId(), backendUrl);
 			var json = request.GetJson("/api/location/" + location.Id);
-			var locationLoot = Json.Deserialize<LocationInfo>(json);
 
-            request.PostJson("/raid/map/name", Json.Serialize(new LocationName(location.Id)));
+			// some magic here. do not change =)
+			var locationLoot = json.ParseJsonTo<LocationInfo>();
+
+			request.PostJson("/raid/map/name", Json.Serialize(new LocationName(location.Id)));
 
             if (locationLoot == null)
 			{
