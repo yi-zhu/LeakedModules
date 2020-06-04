@@ -4,14 +4,15 @@ using EmuTarkov.Common.Utils.HTTP;
 
 namespace EmuTarkov.SinglePlayer.Utils.Player
 {
-	public class SaveLootUtil
+	class SaveLootUtil
 	{
-		public static void SaveProfileProgress(string backendUrl, string session, ExitStatus exitStatus, Profile profileData, bool isPlayerScav)
+		public static void SaveProfileProgress(string backendUrl, string session, ExitStatus exitStatus, Profile profileData, PlayerHealth currentHealth, bool isPlayerScav)
 		{
 			SaveProfileRequest request = new SaveProfileRequest
 			{
 				exit = exitStatus.ToString().ToLower(),
 				profile = profileData,
+				health = currentHealth,
 				isPlayerScav = isPlayerScav
 			};
 
@@ -24,6 +25,7 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
 			public string exit = "left";
 			public Profile profile;
 			public bool isPlayerScav;
+			public PlayerHealth health;
 		}
 	}
 }

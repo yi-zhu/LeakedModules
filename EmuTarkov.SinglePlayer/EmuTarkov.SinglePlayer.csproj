@@ -52,6 +52,10 @@
       <HintPath>..\Shared\References\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PlayerEnums">
+      <HintPath>..\Shared\References\PlayerEnums.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\Shared\References\UnityEngine.dll</HintPath>
@@ -73,6 +77,9 @@
     <Compile Include="Patches\Bots\GetNewBotTemplatesPatch.cs" />
     <Compile Include="Patches\Bots\RemoveUsedBotProfilePatch.cs" />
     <Compile Include="Patches\Bots\SpawnPmcPatch.cs" />
+    <Compile Include="Patches\Healing\PlayerPatch.cs" />
+    <Compile Include="Utils\Player\HealthListener.cs" />
+    <Compile Include="Patches\Healing\MainMenuControllerPatch.cs" />
     <Compile Include="Patches\Dogtag\DogtagPatch.cs" />
     <Compile Include="Patches\Location\OfflineLootPatch.cs" />
     <Compile Include="Patches\Matchmaker\MatchmakerOfflineRaidPatch.cs" />
@@ -82,6 +89,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Bots\BotLimits.cs" />
     <Compile Include="Utils\Config.cs" />
+    <Compile Include="Utils\Player\PlayerHealth.cs" />
     <Compile Include="Utils\Player\SaveLootUtil.cs" />
     <Compile Include="Utils\Reflection\ClientAppUtils.cs" />
     <Compile Include="Utils\Reflection\LocalGameUtils.cs" />

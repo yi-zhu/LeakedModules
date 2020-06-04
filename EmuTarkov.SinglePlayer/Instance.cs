@@ -33,6 +33,9 @@ namespace EmuTarkov.SinglePlayer
             PatcherUtil.PatchPostfix<WeaponDurabilityPatch>();
 
             PatcherUtil.PatchPostfix<DogtagPatch>();
+
+            PatcherUtil.Patch<Patches.Healing.MainMenuControllerPatch>();
+            PatcherUtil.Patch<Patches.Healing.PlayerPatch>();
         }
     }
 }

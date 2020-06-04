@@ -20,9 +20,9 @@ namespace EmuTarkov.Common.Utils.Hook
 			}
 		}
 
-		public static void Load()
+		public static T Load()
 		{
-			HookObject.GetOrAddComponent<T>();
+			return HookObject.GetOrAddComponent<T>();
 		}
 	}
 }
