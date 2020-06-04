@@ -34,7 +34,9 @@ namespace EmuTarkov.SinglePlayer.Patches.Progression
                 isPlayerScav = true;
             }
 
-            SaveLootUtil.SaveProfileProgress(backendUrl, session.GetPhpSessionId(), result.Value0, profile, isPlayerScav);
+            var currentHealth = Utils.Player.HealthListener.Instance.CurrentHealth;
+
+            SaveLootUtil.SaveProfileProgress(backendUrl, session.GetPhpSessionId(), result.Value0, profile, currentHealth, isPlayerScav);
         }
     }
 }
