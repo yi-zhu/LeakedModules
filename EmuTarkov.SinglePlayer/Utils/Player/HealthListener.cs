@@ -108,24 +108,25 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
             });
         }
 
-        private void OnDiedEvent(EFT.HealthSystem.EDamageType obj)
-        {
-            CurrentHealth.IsAlive = false;
-        }
-
         private void SetCurrentHealth(IHealthController healthController, IReadOnlyDictionary<EBodyPart, BodyPartHealth> dictionary, EBodyPart bodyPart)
         {
             var bodyPartHealth = healthController.GetBodyPartHealth(bodyPart);
             dictionary[bodyPart].Initialize(bodyPartHealth.Current, bodyPartHealth.Maximum);
             // set effects
-            var effects = healthController.GetActiveEffects(bodyPart);
-            if (effects.Any(x => x.Type.Name == "BreakPart"))
+            if (healthController.IsBodyPartBroken(bodyPart))
                 dictionary[bodyPart].AddEffect(BodyPartEffect.BreakPart);
+        }
+
+        private void OnDiedEvent(EFT.HealthSystem.EDamageType obj)
+        {
+            CurrentHealth.IsAlive = false;
         }
 
         public void OnHealthChangedEvent(EBodyPart bodyPart, float diff, StDamage effect)
         {
             CurrentHealth.Health[bodyPart].ChangeHealth(diff);
+
+            _simpleTimer.isHealthSynchronized = false;
         }
 
         public void OnEffectAddedEvent(IEffect effect)
@@ -137,6 +138,8 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
                 return;
 
             CurrentHealth.Health[effect.BodyPart].AddEffect(BodyPartEffect.BreakPart);
+
+            _simpleTimer.isHealthSynchronized = false;
         }
 
 
@@ -149,6 +152,8 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
                 return;
 
             CurrentHealth.Health[effect.BodyPart].RemoveEffect(BodyPartEffect.BreakPart);
+
+            _simpleTimer.isHealthSynchronized = false;
         }
 
 
@@ -156,7 +161,9 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
         {
             float current = _healthController.Hydration.Current;
 
-            CurrentHealth.Hydration -= diff;
+            CurrentHealth.Hydration += diff;
+
+            _simpleTimer.isHealthSynchronized = false;
         }
 
 
@@ -164,7 +171,9 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
         {
             float current = _healthController.Energy.Current;
 
-            CurrentHealth.Energy -= diff;
+            CurrentHealth.Energy += diff;
+
+            _simpleTimer.isHealthSynchronized = false;
         }
 
         class Disposable : IDisposable
@@ -189,6 +198,7 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
             float timer = 0f;
 
             public bool isSyncHealthEnabled = false;
+            public bool isHealthSynchronized = false;
             public Func<Task> syncHealthAction;
 
             async void Update()
@@ -204,9 +214,12 @@ namespace EmuTarkov.SinglePlayer.Utils.Player
 
             Task Tick()
             {
-                return isSyncHealthEnabled
-                    ? syncHealthAction()
-                    : Task.CompletedTask;
+                if (isSyncHealthEnabled && !isHealthSynchronized)
+                {
+                    isHealthSynchronized = true;
+                    return syncHealthAction();
+                }
+                return Task.CompletedTask;
             }
         }
     }
