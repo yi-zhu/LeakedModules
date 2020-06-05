@@ -1,12 +1,7 @@
-﻿using Comfort.Common;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 using EFT;
 using EmuTarkov.Common.Utils.Patching;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmuTarkov.SinglePlayer.Patches.Healing
 {
@@ -30,8 +25,10 @@ namespace EmuTarkov.SinglePlayer.Patches.Healing
                 _playerAccountId = profile.AccountId;
             }
 
-            if (__instance.Profile.AccountId != _playerAccountId)
-                return;
+			if (__instance.Profile.AccountId != _playerAccountId)
+			{
+				return;
+			}
 
             await __result;
 
