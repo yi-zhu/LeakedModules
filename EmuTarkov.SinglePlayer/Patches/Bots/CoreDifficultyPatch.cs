@@ -10,7 +10,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 		public CoreDifficultyPatch()
 		{
 			methodName = "LoadCoreByString";
-			flags = BindingFlags.Public | BindingFlags.Static;
+			flags = BindingFlags.Public | BindingFlags.Instance;
 		}
 
 		public override MethodInfo TargetMethod()

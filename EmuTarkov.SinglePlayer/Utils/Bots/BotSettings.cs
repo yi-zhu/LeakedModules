@@ -27,29 +27,20 @@ namespace EmuTarkov.SinglePlayer.Utils.Bots
 			RequestCoreDifficulty();
 
 			// set bot values
-			var roles = Enum.GetValues(typeof(WildSpawnType));
+			var types = Enum.GetValues(typeof(WildSpawnType));
 			var difficulties = Enum.GetValues(typeof(BotDifficulty));
 
-			foreach (WildSpawnType role in roles)
+			foreach (WildSpawnType type in types)
 			{
-				if (role == WildSpawnType.assaultGroup          // NOTE: never encounted this one, what is it?
-				|| role == WildSpawnType.bossStormtrooper       // TODO: we need server-side dumps
-				|| role == WildSpawnType.bossTest               // NOTE: interesting
-				|| role == WildSpawnType.followerGluharSnipe    // TODO: we need server-side dumps
-				|| role == WildSpawnType.followerStormtrooper	// TODO: we need server-side dumps
-				|| role == WildSpawnType.followerTest           // NOTE: interesting
-				|| role == WildSpawnType.test)                  // NOTE: interesting
-				{
-					continue;
-				}
-
 				// set default values
-				Limits[role] = 30;
-				RequestLimit(role);
+				Limits[type] = 30;
+				RequestLimit(type);
 
 				foreach (BotDifficulty botDifficulty in difficulties)
 				{
-					Difficulties.Add(RequestDifficulty(role, botDifficulty, new Difficulty(role, botDifficulty, null)));
+					Difficulty difficulty = new Difficulty(type, botDifficulty, null);
+					Difficulties.Add(difficulty);
+					RequestDifficulty(type, botDifficulty, difficulty);
 				}
 			}
 		}
@@ -65,22 +56,21 @@ namespace EmuTarkov.SinglePlayer.Utils.Bots
 			}
 
 			Debug.LogError("EmuTarkov.SinglePlayer: Sucessfully received bot " + role.ToString() + " limit data");
-			Limits[role] = Convert.ToInt32(json);
+			Limits.Add(role, Convert.ToInt32(json));
 		}
 
-		private static Difficulty RequestDifficulty(WildSpawnType role, BotDifficulty botDifficulty, Difficulty difficulty)
+		private static void RequestDifficulty(WildSpawnType role, BotDifficulty botDifficulty, Difficulty difficulty)
 		{
 			string json = new Request(Session, BackendUrl).GetJson("/client/game/bot/difficulty/" + role.ToString() + "/" + botDifficulty.ToString());
 
 			if (string.IsNullOrEmpty(json))
 			{
 				Debug.LogError("EmuTarkov.SinglePlayer: Received bot " + role.ToString() + " " + botDifficulty.ToString() + " difficulty data is NULL, using fallback");
-				return null;
+				return;
 			}
 
 			Debug.LogError("EmuTarkov.SinglePlayer: Sucessfully received bot " + role.ToString() + " " + botDifficulty.ToString() + " difficulty data");
 			difficulty.Json = json;
-			return difficulty;
 		}
 
 		private static void RequestCoreDifficulty()

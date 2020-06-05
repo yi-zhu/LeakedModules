@@ -11,7 +11,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Bots
 		public BotDifficultyPatch()
 		{
 			methodName = "LoadDifficultyStringInternal";
-			flags = BindingFlags.Public | BindingFlags.Static;
+			flags = BindingFlags.Public | BindingFlags.Instance;
 		}
 
 		public override MethodInfo TargetMethod()

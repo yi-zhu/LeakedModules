@@ -17,16 +17,7 @@ namespace EmuTarkov.SinglePlayer
 			// todo: find a way to get php session id
 			new BotSettings(null, Utils.Config.BackendUrl);
 
-			PatcherUtil.PatchPrefix<OfflineLootPatch>();
-			PatcherUtil.PatchPrefix<OfflineSaveProfilePatch>();
-			PatcherUtil.PatchPostfix<WeaponDurabilityPatch>();
-
-			PatcherUtil.Patch<Patches.Healing.MainMenuControllerPatch>();
-			PatcherUtil.Patch<Patches.Healing.PlayerPatch>();
-
-			PatcherUtil.PatchPostfix<MatchmakerOfflineRaidPatch>();
-
-			PatcherUtil.PatchPostfix<BotTemplateLimitPatch>();
+            PatcherUtil.PatchPostfix<BotTemplateLimitPatch>();
             PatcherUtil.PatchPrefix<GetNewBotTemplatesPatch>();
             PatcherUtil.PatchPrefix<RemoveUsedBotProfilePatch>();
             PatcherUtil.PatchPrefix<SpawnPmcPatch>();
@@ -35,6 +26,15 @@ namespace EmuTarkov.SinglePlayer
 
 			PatcherUtil.PatchPrefix<BeaconPatch>();
 			PatcherUtil.PatchPostfix<DogtagPatch>();
+
+			PatcherUtil.PatchPrefix<OfflineLootPatch>();
+			PatcherUtil.PatchPrefix<OfflineSaveProfilePatch>();
+            PatcherUtil.PatchPostfix<WeaponDurabilityPatch>();
+
+			PatcherUtil.PatchPostfix<MatchmakerOfflineRaidPatch>();
+
+			PatcherUtil.Patch<Patches.Healing.MainMenuControllerPatch>();
+            PatcherUtil.Patch<Patches.Healing.PlayerPatch>();
         }
     }
 }

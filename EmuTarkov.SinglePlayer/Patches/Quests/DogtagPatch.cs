@@ -38,7 +38,7 @@ namespace EmuTarkov.SinglePlayer.Patches.Quests
             }
 
             var equipment = getEquipmentProperty(__instance);
-            var dogtagSlot = equipment.GetSlot(EquipmentSlot.Dogtag);
+            var dogtagSlot = equipment.GetSlot(EFT.InventoryLogic.EquipmentSlot.Dogtag);
             var dogtagItem = dogtagSlot.ContainedItem as Item;
 
             if (dogtagItem == null)
